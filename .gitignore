@@ -10,3 +10,6 @@
 *.lai
 *.la
 *.a
+
+processLargeSets/Debug/*
+processLargeSets/boost_1_47_0/*
