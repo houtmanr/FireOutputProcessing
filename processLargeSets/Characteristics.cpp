@@ -9,21 +9,71 @@ using namespace std;
     
     };
 
+  //Initialize HARVEST sample pathway characteristics
+  Characteristics::Characteristics(int pHfireOfInterest, int pHpathway, int pHaction, int pHyear, double pPP1, double pPP2,
+    double pPP3, double pPP4, double pPP5, double pLP1, double pLP2, double pLP3, double pMC1, double pMC2, double pMC3, 
+    double pMC4, double pMC5, double pHarvestTotal, double pHarvestPP, double pHarvestLP, double pHarvestMC){
+
+    HfireOfInterest = pHfireOfInterest;
+    Hpathway = pHpathway;
+    Haction = pHaction;
+    Hyear = pHyear;
+    PP1 = pPP1;
+    PP2 = pPP2;
+    PP3 = pPP3;
+    PP4 = pPP4;
+    PP5 = pPP5;
+    LP1 = pLP1;
+    LP2 = pLP2;
+    LP3 = pLP3;
+    MC1 = pMC1;
+    MC2 = pMC2;
+    MC3 = pMC3;
+    MC4 = pMC4;
+    MC5 = pMC5;
+    harvestTotal = ((pHarvestPP * .165) + (pHarvestLP * .15) + (pHarvestMC * .165));
+    harvestPP = (pHarvestPP * .165) / pow(1.04, Hyear);
+    harvestLP = (pHarvestLP * .15) / pow(1.04, Hyear);
+    harvestMC = (pHarvestMC * .165) / pow(1.04, Hyear);
+    totalHarvestPathway = harvestPP + harvestLP + harvestMC;
+    sclassPP1 = pow(PP1 - 10, 2);
+    sclassPP2 = pow(PP2 - 5, 2);
+    sclassPP3 = pow(PP3 - 35, 2);
+    sclassPP4 = pow(PP4 - 45, 2);
+    sclassPP5 = pow(PP5 - 5, 2);
+    deviationPP = (sclassPP1 + sclassPP2 + sclassPP3 + sclassPP4 + sclassPP5) / 5;
+
+  };
+
+  
   // Intialize sample pathway characteristics.
-  Characteristics::Characteristics(int pFireOfInterest, int pPathway, int pAction, int pYear, int pCallFarsite, 
-    double pSuppression, double pTimberLoss, double pErc, double pSc, double pArea){
+  Characteristics::Characteristics(int pFireOfInterest, int pPathway, int pAction, int pYear, int pStartIndex, int pCallFarsite, 
+    double pSuppression, double pTimberLoss, double pErc, double pSc, int pPrecip, int pTemperature, int pHumid, 
+    int pWdirection, int pWind, double pArea, double pCrown, int pIgnition, int pCover, int pAspect, int pSlope, int pFuel){
 
     fireOfInterest = pFireOfInterest;
     pathway = pPathway;
     action = pAction;
     year = pYear;
+    startIndex = pStartIndex;
     callFarsite = pCallFarsite;
     suppression = pSuppression / pow(1.04, year);
-    timberLoss = pTimberLoss / pow(1.04, year);
+    timberLoss = pSuppression;                    //pTimberLoss / pow(1.04, year);
     valueChange = suppression + timberLoss;
     foiErc = pErc;
     foiSc = pSc;
     foiSize = pArea;
+    foiCrown = pCrown;
+    foiPrecip = pPrecip;
+    foiTemperature = pTemperature;
+    foiHumid = pHumid;
+    foiWdirection = pWdirection;
+    foiWind = pWind;
+    foiIgnition = pIgnition;
+    foiCover = pCover;
+    foiAspect = pAspect;
+    foiSlope = pSlope;
+    foiFuel = pFuel;
     if(year != 0)
       futureSuppression = suppression;
     else
@@ -153,7 +203,40 @@ void Characteristics::printPairValues(FILE * pairOutput){
     timberLossSavings, totalCostPlusNVC);
 };
 
+//HARVEST
+int Characteristics::getHFireOfInterest(){
+  return HfireOfInterest;
+};
 
+int Characteristics::getHPathway(){
+  return Hpathway;  
+};
+  
+int Characteristics::getHAction(){
+  return Haction;
+};
+  
+int Characteristics::getHYear(){
+  return Hyear;
+};
+
+int Characteristics::getStartIndex(){
+  return startIndex;
+};
+
+double Characteristics::getTotalHarvestPathway(){
+  return totalHarvestPathway;
+}
+
+double Characteristics::getTotalHarvest(){
+  return harvestTotal;
+}
+
+double Characteristics::getTotalDeviationPP(){
+  return deviationPP;
+}
+
+//SUPPRESSION
 int Characteristics::getFireOfInterest(){
   return fireOfInterest;
 };
@@ -197,6 +280,50 @@ double Characteristics::getFOISc(){
 double Characteristics::getFOISize(){
   return foiSize;
 };
+
+double Characteristics::getFOICrown(){
+    return foiCrown;
+}
+
+int Characteristics::getFOIPrecip(){
+  return foiPrecip;
+}
+
+int Characteristics::getFOITemperature(){
+  return foiTemperature;
+}
+
+int Characteristics::getFOIHumid(){
+  return foiHumid;
+}
+
+int Characteristics::getFOIWdirection(){
+  return foiWdirection;
+}
+
+int Characteristics::getFOIWind(){
+  return foiWind;
+}
+
+int Characteristics::getFOIIgnition(){
+  return foiIgnition;
+}
+
+int Characteristics::getFOICover(){
+  return foiCover;
+}
+
+int Characteristics::getFOIAspect(){
+  return foiAspect;
+}
+
+int Characteristics::getFOISlope(){
+  return foiSlope;
+}
+
+int Characteristics::getFOIFuel(){
+  return foiFuel;
+}
   
 double Characteristics::getSuppressionCostSavings(){
   return suppressionCostSavings;
