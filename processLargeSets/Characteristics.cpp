@@ -35,7 +35,7 @@ using namespace std;
     harvestPP = (pHarvestPP * .165) / pow(1.04, Hyear);
     harvestLP = (pHarvestLP * .15) / pow(1.04, Hyear);
     harvestMC = (pHarvestMC * .165) / pow(1.04, Hyear);
-    totalHarvestPathway = harvestPP + harvestLP + harvestMC;
+    totalHarvestValue = harvestPP + harvestLP + harvestMC;
     sclassPP1 = pow(PP1 - 10, 2);
     sclassPP2 = pow(PP2 - 5, 2);
     sclassPP3 = pow(PP3 - 35, 2);
@@ -48,17 +48,19 @@ using namespace std;
   
   // Intialize sample pathway characteristics.
   Characteristics::Characteristics(int pFireOfInterest, int pPathway, int pAction, int pYear, int pStartIndex, int pCallFarsite, 
-    double pSuppression, double pTimberLoss, double pErc, double pSc, int pPrecip, int pTemperature, int pHumid, 
+    double pSuppression, double pTimberLoss, double pErc, double pSc, double pPrecip, double pTemperature, double pHumid, 
     int pWdirection, int pWind, double pArea, double pCrown, int pIgnition, int pCover, int pAspect, int pSlope, int pFuel){
 
     fireOfInterest = pFireOfInterest;
     pathway = pPathway;
     action = pAction;
     year = pYear;
+    if(pYear == 0)
+      foiSuppress = pSuppression;
     startIndex = pStartIndex;
     callFarsite = pCallFarsite;
     suppression = pSuppression / pow(1.04, year);
-    timberLoss = pSuppression;                    //pTimberLoss / pow(1.04, year);
+    timberLoss = pTimberLoss;                    //pTimberLoss / pow(1.04, year);
     valueChange = suppression + timberLoss;
     foiErc = pErc;
     foiSc = pSc;
@@ -224,8 +226,8 @@ int Characteristics::getStartIndex(){
   return startIndex;
 };
 
-double Characteristics::getTotalHarvestPathway(){
-  return totalHarvestPathway;
+double Characteristics::getTotalHarvestValue(){
+  return totalHarvestValue;
 }
 
 double Characteristics::getTotalHarvest(){
@@ -285,15 +287,15 @@ double Characteristics::getFOICrown(){
     return foiCrown;
 }
 
-int Characteristics::getFOIPrecip(){
+double Characteristics::getFOIPrecip(){
   return foiPrecip;
 }
 
-int Characteristics::getFOITemperature(){
+double Characteristics::getFOITemperature(){
   return foiTemperature;
 }
 
-int Characteristics::getFOIHumid(){
+double Characteristics::getFOIHumid(){
   return foiHumid;
 }
 
@@ -324,7 +326,11 @@ int Characteristics::getFOISlope(){
 int Characteristics::getFOIFuel(){
   return foiFuel;
 }
-  
+
+double Characteristics::getFOISuppress(){
+  return foiSuppress;
+};
+
 double Characteristics::getSuppressionCostSavings(){
   return suppressionCostSavings;
 };

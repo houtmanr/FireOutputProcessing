@@ -25,8 +25,8 @@ public:
   * Tracks characteristics of a SUPPRESSION sample pathway.
   */
   Characteristics::Characteristics(int pFireOfInterest, int pPathway, int pAction, int pCallFarsite, int pYear, 
-    int startIndex, double pSuppression, double pTimberLoss, double pErc, double pSc, int pPrecip, int pTemperature, 
-    int pHumid, int pWdirection, int pWind, double pArea, double pCrown, int pIgnition, int pCover, int pAspect,
+    int startIndex, double pSuppression, double pTimberLoss, double pErc, double pSc, double pPrecip, double pTemperature, 
+    double pHumid, int pWdirection, int pWind, double pArea, double pCrown, int pIgnition, int pCover, int pAspect,
     int pSlope, int pFuel);
 
   /**
@@ -86,16 +86,16 @@ public:
   double getFutureSuppress();
   double getTimberLoss();
   double getValueChange();
-  double getTotalHarvestPathway();
+  double getTotalHarvestValue();
   double getTotalHarvest();
   double getTotalDeviationPP();
   double getFOIErc();
   double getFOISc();
   double getFOISize();
   double getFOICrown();
-  int getFOIPrecip();
-  int getFOITemperature();
-  int getFOIHumid();
+  double getFOIPrecip();
+  double getFOITemperature();
+  double getFOIHumid();
   int getFOIWdirection();
   int getFOIWind();
   int getFOIIgnition();
@@ -103,6 +103,7 @@ public:
   int getFOIAspect();
   int getFOISlope();
   int getFOIFuel();
+  double getFOISuppress();
   double getSuppressionCostSavings();
   double getTimberLossSavings();
   double getTotalCostPlusNVC();
@@ -134,7 +135,7 @@ private:
   double harvestPP;
   double harvestLP;
   double harvestMC;
-  double totalHarvestPathway;
+  double totalHarvestValue;
   double sclassPP1;
   double sclassPP2;
   double sclassPP3;
@@ -161,9 +162,9 @@ private:
   double foiSize;
   double foiCrown;
   int foiStartIndex;
-  int foiPrecip;
-  int foiTemperature;
-  int foiHumid;
+  double foiPrecip;
+  double foiTemperature;
+  double foiHumid;
   int foiWdirection;
   int foiWind;
   int foiIgnition;
@@ -171,6 +172,7 @@ private:
   int foiAspect;
   int foiSlope;
   int foiFuel;
+  int foiSuppress;
 
   // Characteristics for the difference calculations.
   double suppressionCostSavings;
