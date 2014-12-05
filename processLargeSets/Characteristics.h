@@ -14,10 +14,20 @@ public:
 
   /**
   * @brief Constructor
-  * Tracks characteristics of a sample pathway.
+  * Tracks characteristics of a HARVEST sample pathway.
+  */
+  Characteristics::Characteristics(int pHfireOfInterest, int pHpathway, int pHaction, int pHyear, double pPP1, double pPP2,
+    double pPP3, double pPP4, double pPP5, double pLP1, double pLP2, double pLP3, double pMC1, double pMC2, double pMC3, 
+    double pMC4, double pMC5, double pHarvestTotal, double pHarvestPP, double pHarvestLP, double pHarvestMC);
+
+  /**
+  * @brief Constructor
+  * Tracks characteristics of a SUPPRESSION sample pathway.
   */
   Characteristics::Characteristics(int pFireOfInterest, int pPathway, int pAction, int pCallFarsite, int pYear, 
-    double pSuppression, double pTimberLoss, double pErc, double pSc, double pArea);
+    int startIndex, double pSuppression, double pTimberLoss, double pErc, double pSc, double pPrecip, double pTemperature, 
+    double pHumid, int pWdirection, int pWind, double pArea, double pCrown, int pIgnition, int pCover, int pAspect,
+    int pSlope, int pFuel);
 
   /**
   * @brief Constructor
@@ -67,13 +77,33 @@ public:
   int getPathway();
   int getAction();
   int getYear();
+  int getHFireOfInterest();
+  int getHPathway();
+  int getHAction();
+  int getHYear();
+  int getStartIndex();
   double getSuppress();
   double getFutureSuppress();
   double getTimberLoss();
   double getValueChange();
+  double getTotalHarvestValue();
+  double getTotalHarvest();
+  double getTotalDeviationPP();
   double getFOIErc();
   double getFOISc();
   double getFOISize();
+  double getFOICrown();
+  double getFOIPrecip();
+  double getFOITemperature();
+  double getFOIHumid();
+  int getFOIWdirection();
+  int getFOIWind();
+  int getFOIIgnition();
+  int getFOICover();
+  int getFOIAspect();
+  int getFOISlope();
+  int getFOIFuel();
+  double getFOISuppress();
   double getSuppressionCostSavings();
   double getTimberLossSavings();
   double getTotalCostPlusNVC();
@@ -83,21 +113,66 @@ public:
 
 private:
 
-  // Characteristics for a pathway.
+  //Characteristics for HARVEST pathway
+  int HfireOfInterest;
+  int Hpathway;
+  int Haction;
+  int Hyear;
+  double PP1;
+  double PP2;
+  double PP3;
+  double PP4;
+  double PP5;
+  double LP1;
+  double LP2;
+  double LP3;
+  double MC1;
+  double MC2;
+  double MC3;
+  double MC4;
+  double MC5;
+  double harvestTotal;
+  double harvestPP;
+  double harvestLP;
+  double harvestMC;
+  double totalHarvestValue;
+  double sclassPP1;
+  double sclassPP2;
+  double sclassPP3;
+  double sclassPP4;
+  double sclassPP5;
+  double deviationPP;
+
+  // Characteristics for a SUPPRESSION pathway.
   int fireOfInterest;
   int pathway;
   int action;
   int callFarsite;
   int year;
+  int startIndex;
   double suppression;
   double futureSuppression;
   double timberLoss;
   double valueChange;
+  
 
   // Characteristics for the first fire.
   double foiErc;
   double foiSc;
   double foiSize;
+  double foiCrown;
+  int foiStartIndex;
+  double foiPrecip;
+  double foiTemperature;
+  double foiHumid;
+  int foiWdirection;
+  int foiWind;
+  int foiIgnition;
+  int foiCover;
+  int foiAspect;
+  int foiSlope;
+  int foiFuel;
+  int foiSuppress;
 
   // Characteristics for the difference calculations.
   double suppressionCostSavings;
