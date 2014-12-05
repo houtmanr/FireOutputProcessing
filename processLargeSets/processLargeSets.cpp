@@ -79,6 +79,7 @@ int _tmain(int argc, _TCHAR* argv[])
   vector<double> sclassPP20;
 
   // Variables to be read in from HARVEST file
+  int averageHarvestVolume;
   int HfireOfInterest;
   int Hpathway;
   int Haction;
@@ -109,13 +110,13 @@ int _tmain(int argc, _TCHAR* argv[])
    
   FILE *inputs;
   char name[100];
-  sprintf_s(name, "..\\..\\Thesis\\harv37mil_0_100\\harvestoutput1.csv");
+  sprintf_s(name, "..\\..\\Thesis\\harvestoutput.csv");
   fopen_s(&inputs, name, "r");
   while(!feof(inputs))
   {
     // Read in the HARVEST input variables. 
-    fscanf_s(inputs, "%d, %d, %d, %d, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf\n", 
-      &HfireOfInterest, &Hpathway, &Haction, &Hyear, &PP1, &PP2, &PP3, &PP4, &PP5, &LP1, &LP2, &LP3, &MC1, &MC2, &MC3, &MC4, &MC5,
+    fscanf_s(inputs, "%d, %d, %d, %d, %d, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf\n", 
+      &averageHarvestVolume, &HfireOfInterest, &Hpathway, &Haction, &Hyear, &PP1, &PP2, &PP3, &PP4, &PP5, &LP1, &LP2, &LP3, &MC1, &MC2, &MC3, &MC4, &MC5,
       &harvestTotal, &harvestPP, &harvestLP, &harvestMC);
 
     Characteristics temp0 = Characteristics(HfireOfInterest, Hpathway, Haction, Hyear, PP1, PP2, PP3, PP4, PP5, LP1, LP2, LP3, MC1, MC2, MC3, MC4, MC5,
@@ -163,108 +164,106 @@ int _tmain(int argc, _TCHAR* argv[])
       }
   }
 
-  // Variable notes: totalHarvest == the total value of the harvest
-  //                 totalHarvestValue == the total value of the harvest discounted to t = 0
+  // Variable notes: totalHarvestUndiscounted == the total value of the harvest for a given year
+  //                 totalHarvestDiscounted == the total value of the harvest discounted to t = 0
 
   //Returns the harvest and sclass deviation for all year 0's and places them in a vector
   for(int b = 0; b < (int)HpathwayCharacters.size(); b += 11){
-      double harvest0 = HpathwayCharacters.at(b).getTotalHarvestValue();
+      double harvest0 = HpathwayCharacters.at(b).getTotalHarvestDiscounted();
       harvestPP0.push_back(harvest0);
       double deviationPP0 = HpathwayCharacters.at(b).getTotalDeviationPP();
       sclassPP0.push_back(deviationPP0);
   }
   //Returns the harvest and sclass deviation for all year 9's and places them in a vector
   for(int b = 1; b < (int)HpathwayCharacters.size(); b += 11){
-      double harvest9 = HpathwayCharacters.at(b).getTotalHarvestValue();
+      double harvest9 = HpathwayCharacters.at(b).getTotalHarvestDiscounted();
       harvestPP9.push_back(harvest9);
-      double harvest9T = HpathwayCharacters.at(b).getTotalHarvest();
+      double harvest9T = HpathwayCharacters.at(b).getTotalHarvestUndiscounted();
       harvestPP9T.push_back(harvest9T);
       double deviationPP9 = HpathwayCharacters.at(b).getTotalDeviationPP();
       sclassPP9.push_back(deviationPP9);
   }
   //Returns the harvest and sclass deviation for all year 19's and places them in a vector
   for(int b = 2; b < (int)HpathwayCharacters.size(); b += 11){
-      double harvest19 = HpathwayCharacters.at(b).getTotalHarvestValue();
+      double harvest19 = HpathwayCharacters.at(b).getTotalHarvestDiscounted();
       harvestPP19.push_back(harvest19);
-      double harvest19T = HpathwayCharacters.at(b).getTotalHarvest();
+      double harvest19T = HpathwayCharacters.at(b).getTotalHarvestUndiscounted();
       harvestPP19T.push_back(harvest19T);
       double deviationPP19 = HpathwayCharacters.at(b).getTotalDeviationPP();
       sclassPP19.push_back(deviationPP19);
   }
   //Returns the harvest and sclass deviation for all year 29's and places them in a vector
   for(int b = 3; b < (int)HpathwayCharacters.size(); b += 11){
-      double harvest29 = HpathwayCharacters.at(b).getTotalHarvestValue();
+      double harvest29 = HpathwayCharacters.at(b).getTotalHarvestDiscounted();
       harvestPP29.push_back(harvest29);
-      double harvest29T = HpathwayCharacters.at(b).getTotalHarvest();
+      double harvest29T = HpathwayCharacters.at(b).getTotalHarvestUndiscounted();
       harvestPP29T.push_back(harvest29T);
       double deviationPP29 = HpathwayCharacters.at(b).getTotalDeviationPP();
       sclassPP29.push_back(deviationPP29);
   }
   //Returns the harvest and sclass deviation for all year 39's and places them in a vector
   for(int b = 4; b < (int)HpathwayCharacters.size(); b += 11){
-      double harvest39 = HpathwayCharacters.at(b).getTotalHarvestValue();
+      double harvest39 = HpathwayCharacters.at(b).getTotalHarvestDiscounted();
       harvestPP39.push_back(harvest39);
-      double harvest39T = HpathwayCharacters.at(b).getTotalHarvest();
+      double harvest39T = HpathwayCharacters.at(b).getTotalHarvestUndiscounted();
       harvestPP39T.push_back(harvest39T);
       double deviationPP39 = HpathwayCharacters.at(b).getTotalDeviationPP();
       sclassPP39.push_back(deviationPP39);
   }
   //Returns the harvest and sclass deviation for all year 49's and places them in a vector
   for(int b = 5; b < (int)HpathwayCharacters.size(); b += 11){
-      double harvest49 = HpathwayCharacters.at(b).getTotalHarvestValue();
+      double harvest49 = HpathwayCharacters.at(b).getTotalHarvestDiscounted();
       harvestPP49.push_back(harvest49);
-      double harvest49T = HpathwayCharacters.at(b).getTotalHarvest();
+      double harvest49T = HpathwayCharacters.at(b).getTotalHarvestUndiscounted();
       harvestPP49T.push_back(harvest49T);
       double deviationPP49 = HpathwayCharacters.at(b).getTotalDeviationPP();
       sclassPP49.push_back(deviationPP49);
   }
   //Returns the harvest and sclass deviation for all year 59's and places them in a vector
   for(int b = 6; b < (int)HpathwayCharacters.size(); b += 11){
-      double harvest59 = HpathwayCharacters.at(b).getTotalHarvestValue();
+      double harvest59 = HpathwayCharacters.at(b).getTotalHarvestDiscounted();
       harvestPP59.push_back(harvest59);
-      double harvest59T = HpathwayCharacters.at(b).getTotalHarvest();
+      double harvest59T = HpathwayCharacters.at(b).getTotalHarvestUndiscounted();
       harvestPP59T.push_back(harvest59T);
       double deviationPP59 = HpathwayCharacters.at(b).getTotalDeviationPP();
       sclassPP59.push_back(deviationPP59);
   }
   //Returns the harvest and sclass deviation for all year 69's and places them in a vector
   for(int b = 7; b < (int)HpathwayCharacters.size(); b += 11){
-      double harvest69 = HpathwayCharacters.at(b).getTotalHarvestValue();
+      double harvest69 = HpathwayCharacters.at(b).getTotalHarvestDiscounted();
       harvestPP69.push_back(harvest69);
-      double harvest69T = HpathwayCharacters.at(b).getTotalHarvest();
+      double harvest69T = HpathwayCharacters.at(b).getTotalHarvestUndiscounted();
       harvestPP69T.push_back(harvest69T);
       double deviationPP69 = HpathwayCharacters.at(b).getTotalDeviationPP();
       sclassPP69.push_back(deviationPP69);
   }
   //Returns the harvest and sclass deviation for all year 79's and places them in a vector
   for(int b = 8; b < (int)HpathwayCharacters.size(); b += 11){
-      double harvest79 = HpathwayCharacters.at(b).getTotalHarvestValue();
+      double harvest79 = HpathwayCharacters.at(b).getTotalHarvestDiscounted();
       harvestPP79.push_back(harvest79);
-      double harvest79T = HpathwayCharacters.at(b).getTotalHarvest();
+      double harvest79T = HpathwayCharacters.at(b).getTotalHarvestUndiscounted();
       harvestPP79T.push_back(harvest79T);
       double deviationPP79 = HpathwayCharacters.at(b).getTotalDeviationPP();
       sclassPP79.push_back(deviationPP79);
   }
   //Returns the harvest and sclass deviation for all year 89's and places them in a vector
   for(int b = 9; b < (int)HpathwayCharacters.size(); b += 11){
-      double harvest89 = HpathwayCharacters.at(b).getTotalHarvestValue();
+      double harvest89 = HpathwayCharacters.at(b).getTotalHarvestDiscounted();
       harvestPP89.push_back(harvest89);
-      double harvest89T = HpathwayCharacters.at(b).getTotalHarvest();
+      double harvest89T = HpathwayCharacters.at(b).getTotalHarvestUndiscounted();
       harvestPP89T.push_back(harvest89T);
       double deviationPP89 = HpathwayCharacters.at(b).getTotalDeviationPP();
       sclassPP89.push_back(deviationPP89);
   }
   //Returns the harvest and sclass deviation for all year 99's and places them in a vector
   for(int b = 10; b < (int)HpathwayCharacters.size(); b += 11){
-      double harvest99 = HpathwayCharacters.at(b).getTotalHarvestValue();
+      double harvest99 = HpathwayCharacters.at(b).getTotalHarvestDiscounted();
       harvestPP99.push_back(harvest99);
-      double harvest99T = HpathwayCharacters.at(b).getTotalHarvest();
+      double harvest99T = HpathwayCharacters.at(b).getTotalHarvestUndiscounted();
       harvestPP99T.push_back(harvest99T);
       double deviationPP99 = HpathwayCharacters.at(b).getTotalDeviationPP();
       sclassPP99.push_back(deviationPP99);
   }
-
-  int counter1 = (int)HpathwayCharacters.size() - harvestPP9.size();
 
   for(int b = 0; b < int(harvestPP9.size()); b ++){
       double harvestTotal = harvestPP9.at(b) + harvestPP19.at(b) + harvestPP29.at(b) + harvestPP39.at(b) + harvestPP49.at(b) +
@@ -310,7 +309,7 @@ int _tmain(int argc, _TCHAR* argv[])
   // for each fire of choice, across random futures.
   vector<Characteristics> foiCharacteristics;
   
-  for(int j = 0; j < 5; j++)
+  for(int j = 0; j < 1; j++)
   {
 
     // This vector will be used to evaluate characteristics
@@ -320,7 +319,7 @@ int _tmain(int argc, _TCHAR* argv[])
     
     FILE *inputs2;
     char name[100];
-    sprintf_s(name, "..\\..\\Thesis\\harv37mil_0_100\\estimatedoutput%d.csv", j);
+    sprintf_s(name, "..\\..\\Thesis\\estimatedoutput%d.csv", j);
     fopen_s(&inputs2, name, "r");
 
     while(!feof(inputs2))
@@ -376,10 +375,10 @@ int _tmain(int argc, _TCHAR* argv[])
           }
         }
       }
-    }
+    
 
-      /*Yearly characteristics.
-      Characteristics temp2 = Characteristics(year, action, erc, sc, numIgnitions,
+      //Yearly characteristics.
+      /*Characteristics temp2 = Characteristics(year, action, erc, sc, numIgnitions,
         crownFirePixels, surfaceFirePixels, suppressionCost, timberLoss);
 
       if(yearlyCharacters.empty())
@@ -415,6 +414,7 @@ int _tmain(int argc, _TCHAR* argv[])
         }
       }*/
     }  
+    }
 
     // Create pair characteristic vector.
     int i = 0;
@@ -448,16 +448,16 @@ int _tmain(int argc, _TCHAR* argv[])
     }
     
     if(newFile == 0){
-      ofstream pathOutput("..\\pathOutputs_0_100.txt", ios::trunc);
+      ofstream pathOutput("..\\pathOutputsharv90mil_averageHV.txt", ios::trunc);
       pathOutput << "FireOfInterest Pathway Action FutureSuppressCost InitialSuppressionCost "
         "TimberLoss ValueChange ERC_FirstFire SC_FirstFire StartIndex Precipitation Temperature Humidity "
         "WindDirection WindSpeed Size_FirstFire CrownFire IgnitionLocation CoverType Aspect Slope "
-        "FuelModel Harvest$Year0 Harvest$Total Harvest$AvePerPeriod "
+        "FuelModel Harvest$Year0 Harvest$Total HarvestValueAvePerPeriod "
         //"Harvest$PP Harvest$LPP Harvest$MC "
         "SClass_0 SClass_20 SClass_50 SClass_Total\n";
       pathOutput.close();
     }
-    ofstream pathOutput("..\\pathOutputs_0_100.txt", ios::app);
+    ofstream pathOutput("..\\pathOutputsharv90mil_averageHV.txt", ios::app);
     newFile = 1;
     
 
@@ -486,9 +486,9 @@ int _tmain(int argc, _TCHAR* argv[])
     fclose(inputs);
       
 
-  /*File for yearly averages.
+  //File for yearly averages.
   FILE * yearOutput;
-  fopen_s(&yearOutput, "..\\yearOutputs_500.txt", "w");
+  fopen_s(&yearOutput, "..\\yearOutputs_90mil.txt", "w");
   fprintf_s(yearOutput, "Year Action ERC SC #Ignitions CrownFire SurfaceFire TotalBurned SuppressionCosts TimberLosses\n");
 
   for(int m = 0; m < (int)yearlyCharacters.size(); m++)
@@ -498,7 +498,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
   // File for change in suppression costs and timber loss over each sample pathway.
   FILE * pairOutput;
-  fopen_s(&pairOutput, "..\\pairOutputs_500.txt", "w");
+  fopen_s(&pairOutput, "..\\pairOutputs_90mil.txt", "w");
   fprintf_s(pairOutput, "FireOfInterest Pathway SuppressionSavings TimberLoss ValueChange\n");
 
   for(int m = 0; m < (int)pairCharacteristics.size(); m++)
@@ -507,7 +507,7 @@ int _tmain(int argc, _TCHAR* argv[])
   fclose(pairOutput);
 
   // Bootstrapping proceedure.
-  ProcessVariables meanBootstrap = ProcessVariables(pairCharacteristics);
+  /*ProcessVariables meanBootstrap = ProcessVariables(pairCharacteristics);
   meanBootstrap.bootstrapFireOfInterest();
 
   // Fire of Interest outputs.
@@ -515,10 +515,10 @@ int _tmain(int argc, _TCHAR* argv[])
   vector<double> timberLosses;
 
   Statistics runStats;
-  int i = pairCharacteristics.at(0).getFireOfInterest();
+  int z = pairCharacteristics.at(0).getFireOfInterest();
   int k = 0;
   FILE * foiOutput;
-  fopen_s(&foiOutput, "..\\foiOutput_500.txt", "w");
+  fopen_s(&foiOutput, "..\\foiOutput_37mil.txt", "w");
   fprintf(foiOutput, "FireOfInterest NumPaths AverageSuppressionSavings SDSuppressionSavings "
     "LowerSC UpperSC AverageTimberLoss SDTimberLoss LowerTL UpperTL\n");
     
@@ -526,7 +526,7 @@ int _tmain(int argc, _TCHAR* argv[])
   {
     int count = 0;
     bool check = 0;
-    while(m < (int)pairCharacteristics.size() && i == pairCharacteristics.at(k).getFireOfInterest() ){
+    while(m < (int)pairCharacteristics.size() && z == pairCharacteristics.at(k).getFireOfInterest() ){
       suppressionCosts.push_back((double)pairCharacteristics.at(m).getSuppressionCostSavings());
       timberLosses.push_back((double)pairCharacteristics.at(m).getTimberLossSavings());
       k++;
@@ -553,7 +553,7 @@ int _tmain(int argc, _TCHAR* argv[])
     }
     suppressionCosts.clear();
     timberLosses.clear();
-    i++;
+    z++;
   }
   fclose(foiOutput);*/
 
