@@ -31,11 +31,22 @@ using namespace std;
     MC3 = pMC3;
     MC4 = pMC4;
     MC5 = pMC5;
-    harvestTotal = ((pHarvestPP * .165) + (pHarvestLP * .15) + (pHarvestMC * .165));
-    harvestPP = (pHarvestPP * .165) / pow(1.04, Hyear);
+    // Aaron's harvest values and H&H costs
+    /*harvestPP = (pHarvestPP * .165) / pow(1.04, Hyear);
     harvestLP = (pHarvestLP * .15) / pow(1.04, Hyear);
     harvestMC = (pHarvestMC * .165) / pow(1.04, Hyear);
-    totalHarvestValue = harvestPP + harvestLP + harvestMC;
+    totalHarvestValueUndiscounted = ((pHarvestPP * .165) + (pHarvestLP * .15) + (pHarvestMC * .165));*/
+    // Average harvest values from 1995-2010, average H&H costs
+    harvestPP = (pHarvestPP * .395) / pow(1.04, Hyear);
+    harvestLP = (pHarvestLP * .213) / pow(1.04, Hyear);
+    harvestMC = (pHarvestMC * .395) / pow(1.04, Hyear);
+    totalHarvestValueUndiscounted = ((pHarvestPP * .395) + (pHarvestLP * .213) + (pHarvestMC * .395));
+    // Maximum harvest values from 1995-2010, average H&H costs
+    /*harvestPP = (pHarvestPP * .693) / pow(1.04, Hyear);
+    harvestLP = (pHarvestLP * .387) / pow(1.04, Hyear);
+    harvestMC = (pHarvestMC * .693) / pow(1.04, Hyear);
+    totalHarvestValueUndiscounted = ((pHarvestPP * .693) + (pHarvestLP * .387) + (pHarvestMC * .693));*/
+    totalHarvestValueDiscounted = harvestPP + harvestLP + harvestMC;
     sclassPP1 = pow(PP1 - 10, 2);
     sclassPP2 = pow(PP2 - 5, 2);
     sclassPP3 = pow(PP3 - 35, 2);
@@ -226,17 +237,29 @@ int Characteristics::getStartIndex(){
   return startIndex;
 };
 
-double Characteristics::getTotalHarvestValue(){
-  return totalHarvestValue;
+double Characteristics::getTotalHarvestUndiscounted(){
+  return totalHarvestValueUndiscounted;
 }
 
-double Characteristics::getTotalHarvest(){
-  return harvestTotal;
+double Characteristics::getTotalHarvestDiscounted(){
+  return totalHarvestValueDiscounted;
 }
 
 double Characteristics::getTotalDeviationPP(){
   return deviationPP;
-}
+};
+
+double Characteristics::getPPHarvestVolume(){
+  return harvestVolumePP;
+};
+
+double Characteristics::getLPPHarvestVolume(){
+  return harvestVolumeLPP;
+};
+
+double Characteristics::getMCHarvestVolume(){
+  return harvestVolumeMC;
+};
 
 //SUPPRESSION
 int Characteristics::getFireOfInterest(){
