@@ -13,6 +13,10 @@ using namespace std;
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+  // Set pathway variables here for a specific dataset. Directories MUST EXIST to work.
+  char workingDirectory[100] = "..\\..\\Thesis\\harv9mil_100_199\\";
+  char outputDirectory[50] = "\\outputs\\9mil_100_199_";
+  
   // Variables to be read in from SUPPRESSION file
   int fireOfInterest;
   int pathway;
@@ -20,7 +24,7 @@ int _tmain(int argc, _TCHAR* argv[])
   int attemptSuppression;
   int callFarsite;
   int year;
-  int startIndex;
+  int startIndex; 
   int endIndex;
   double erc;
   double sc;
@@ -79,7 +83,7 @@ int _tmain(int argc, _TCHAR* argv[])
   vector<double> sclassPP20;
 
   // Variables to be read in from HARVEST file
-  int averageHarvestVolume;
+  double averageHarvestVolume;
   int HfireOfInterest;
   int Hpathway;
   int Haction;
@@ -101,30 +105,38 @@ int _tmain(int argc, _TCHAR* argv[])
   double harvestPP = 0;
   double harvestLP = 0;
   double harvestMC = 0;
-  
+  double finalHarvest[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  Characteristics temp0;
+
   // tracks when a new file has been opened.
   bool newFile = 0;
 
   vector<Characteristics> HpathwayCharacters;
+  vector<double> finalLTV;
   vector<Characteristics> pathwayCharacters;
-   
+  
+  
   FILE *inputs;
   char name[100];
-  sprintf_s(name, "..\\..\\Thesis\\harvestoutput.csv");
+  sprintf_s(name, "%sharvestoutput_sorted.csv", workingDirectory);
   fopen_s(&inputs, name, "r");
+  int harvest = 0;
   while(!feof(inputs))
   {
-    // Read in the HARVEST input variables. 
-    fscanf_s(inputs, "%d, %d, %d, %d, %d, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf\n", 
-      &averageHarvestVolume, &HfireOfInterest, &Hpathway, &Haction, &Hyear, &PP1, &PP2, &PP3, &PP4, &PP5, &LP1, &LP2, &LP3, &MC1, &MC2, &MC3, &MC4, &MC5,
-      &harvestTotal, &harvestPP, &harvestLP, &harvestMC);
+    if(harvest < 11)
+    {
+      // Read in the HARVEST input variables. 
+      fscanf_s(inputs, "%d, %d, %d, %d, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf\n", 
+        &HfireOfInterest, &Hpathway, &Haction, &Hyear, &averageHarvestVolume, &PP1, &PP2, &PP3, &PP4, &PP5, &LP1, &LP2, &LP3, &MC1, &MC2, &MC3, &MC4, &MC5,
+        &harvestTotal, &harvestPP, &harvestLP, &harvestMC);
+      harvest++;
 
-    Characteristics temp0 = Characteristics(HfireOfInterest, Hpathway, Haction, Hyear, PP1, PP2, PP3, PP4, PP5, LP1, LP2, LP3, MC1, MC2, MC3, MC4, MC5,
-      harvestTotal, harvestPP, harvestLP, harvestMC);
+      temp0 = Characteristics(HfireOfInterest, Hpathway, Haction, Hyear, PP1, PP2, PP3, PP4, PP5, LP1, LP2, LP3, MC1, MC2, MC3, MC4, MC5,
+        harvestTotal, harvestPP, harvestLP, harvestMC);
 
-    // This loop sorts the harvest variables by fire of interest, pathway, action, and year. There must
-    // be a faster way to do this. Vector sort function?
-    if(HpathwayCharacters.empty())
+      // This loop sorts the harvest variables by fire of interest, pathway, action, and year. There must
+      // be a faster way to do this. Vector sort function?
+      if(HpathwayCharacters.empty())
         HpathwayCharacters.push_back(temp0);
       else
       {
@@ -162,7 +174,17 @@ int _tmain(int argc, _TCHAR* argv[])
 
         }
       }
+    }
+    else if(harvest == 11)
+    {
+      fscanf_s(inputs, ", %d, %d, %d, %d, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf\n", &HfireOfInterest, &Hpathway, &Haction, &Hyear, 
+                        &finalHarvest[0], &finalHarvest[1], &finalHarvest[2], &finalHarvest[3], &finalHarvest[4], &finalHarvest[5], &finalHarvest[6], 
+                        &finalHarvest[7], &finalHarvest[8], &finalHarvest[9],  &finalHarvest[10]);
+      harvest = 0;
+      finalLTV.push_back(finalHarvest[10]);
+    }
   }
+
 
   // Variable notes: totalHarvestUndiscounted == the total value of the harvest for a given year
   //                 totalHarvestDiscounted == the total value of the harvest discounted to t = 0
@@ -265,38 +287,27 @@ int _tmain(int argc, _TCHAR* argv[])
       sclassPP99.push_back(deviationPP99);
   }
 
-  for(int b = 0; b < int(harvestPP9.size()); b ++){
+  for(int b = 0; b < int(harvestPP29.size()); b ++){
+
       double harvestTotal = harvestPP9.at(b) + harvestPP19.at(b) + harvestPP29.at(b) + harvestPP39.at(b) + harvestPP49.at(b) +
           harvestPP59.at(b) + harvestPP69.at(b) + harvestPP79.at(b) + harvestPP89.at(b) + harvestPP99.at(b);
       harvestPPtotal.push_back(harvestTotal);
-  }
 
-  for(int b = 0; b < int(harvestPP9.size()); b ++){
+      double sclassTotal20 = sclassPP19.at(b);
+      sclassPP20.push_back(sclassTotal20);      
+
+      double sclassTotal50 = sclassPP49.at(b);
+      sclassPP50.push_back(sclassTotal50);
+
+      double sclassTotal = sclassPP99.at(b);
+      sclassPPtotal.push_back(sclassTotal);
+      
       double harvestTotalAvg = (harvestPP9T.at(b) + harvestPP19T.at(b) + harvestPP29T.at(b) + harvestPP39T.at(b) + harvestPP49T.at(b) +
           harvestPP59T.at(b) + harvestPP69T.at(b) + harvestPP79T.at(b) + harvestPP89T.at(b) + harvestPP99T.at(b)) / 100;
       harvestPPAvg.push_back(harvestTotalAvg);
+
   }
-
-  for(int b = 0; b < int(harvestPP9.size()); b ++){
-      double sclassTotal20 = sclassPP19.at(b);
-      sclassPP20.push_back(sclassTotal20);
-  }
-
-  for(int b = 0; b < int(harvestPP9.size()); b ++){
-      double sclassTotal50 = sclassPP49.at(b);
-      sclassPP50.push_back(sclassTotal50);
-  }
-
-  for(int b = 0; b < int(harvestPP9.size()); b ++){
-      double sclassTotal = sclassPP99.at(b);
-      sclassPPtotal.push_back(sclassTotal);
-  }
-
-  
-
-  
-
-      
+    
   // This vector will be used to evaluate characteristics
   // across the years.
   vector<Characteristics> yearlyCharacters;
@@ -309,7 +320,7 @@ int _tmain(int argc, _TCHAR* argv[])
   // for each fire of choice, across random futures.
   vector<Characteristics> foiCharacteristics;
   
-  for(int j = 0; j < 1; j++)
+  for(int j = 0; j < 11; j++)
   {
 
     // This vector will be used to evaluate characteristics
@@ -318,8 +329,7 @@ int _tmain(int argc, _TCHAR* argv[])
     //vector<Characteristics> pathwayCharacters;
     
     FILE *inputs2;
-    char name[100];
-    sprintf_s(name, "..\\..\\Thesis\\estimatedoutput%d.csv", j);
+    sprintf_s(name, "%sestimatedoutput%d.csv", workingDirectory, j);
     fopen_s(&inputs2, name, "r");
 
     while(!feof(inputs2))
@@ -378,7 +388,7 @@ int _tmain(int argc, _TCHAR* argv[])
     
 
       //Yearly characteristics.
-      /*Characteristics temp2 = Characteristics(year, action, erc, sc, numIgnitions,
+      Characteristics temp2 = Characteristics(year, action, erc, sc, numIgnitions,
         crownFirePixels, surfaceFirePixels, suppressionCost, timberLoss);
 
       if(yearlyCharacters.empty())
@@ -412,7 +422,7 @@ int _tmain(int argc, _TCHAR* argv[])
             break;
           }
         }
-      }*/
+      }
     }  
     }
 
@@ -446,21 +456,21 @@ int _tmain(int argc, _TCHAR* argv[])
         else
           i++;
     }
-    
+    sprintf_s(name, "%sPathOutputs.txt", workingDirectory);
     if(newFile == 0){
-      ofstream pathOutput("..\\pathOutputsharv90mil_averageHV.txt", ios::trunc);
+      ofstream pathOutput(name, ios::trunc);
       pathOutput << "FireOfInterest Pathway Action FutureSuppressCost InitialSuppressionCost "
         "TimberLoss ValueChange ERC_FirstFire SC_FirstFire StartIndex Precipitation Temperature Humidity "
         "WindDirection WindSpeed Size_FirstFire CrownFire IgnitionLocation CoverType Aspect Slope "
         "FuelModel Harvest$Year0 Harvest$Total HarvestValueAvePerPeriod "
         //"Harvest$PP Harvest$LPP Harvest$MC "
-        "SClass_0 SClass_20 SClass_50 SClass_Total\n";
+        "SClass_0 SClass_20 SClass_50 SClass_Total FinalLTV\n";
       pathOutput.close();
     }
-    ofstream pathOutput("..\\pathOutputsharv90mil_averageHV.txt", ios::app);
+    ofstream pathOutput(name, ios::app);
     newFile = 1;
     
-
+    int o = 0;
     for(int m = 0; m < (int)pathwayCharacters.size(); m ++)
     {
       
@@ -477,86 +487,91 @@ int _tmain(int argc, _TCHAR* argv[])
         pathwayCharacters.at(m).getFOIWind() <<  " " << pathwayCharacters.at(m).getFOISize() <<  " " << 
         pathwayCharacters.at(m).getFOICrown() <<  " " << pathwayCharacters.at(m).getFOIIgnition() <<  " " << 
         pathwayCharacters.at(m).getFOICover() <<  " " << pathwayCharacters.at(m).getFOIAspect() <<  " " << 
-        pathwayCharacters.at(m).getFOISlope() <<  " " << pathwayCharacters.at(m).getFOIFuel() <<  " " << 
-        harvestPP0.at(m) <<  " " << harvestPPtotal.at(m) <<  " " << harvestPPAvg.at(m) <<  " " << sclassPP0.at(m) <<  " " << 
-        sclassPP20.at(m) <<  " " << sclassPP50.at(m) <<  " " << sclassPPtotal.at(m) << "\n";
+        pathwayCharacters.at(m).getFOISlope() <<  " " << pathwayCharacters.at(m).getFOIFuel() <<
+        harvestPP0.at(o) <<  " " << harvestPPtotal.at(o) <<  " " << harvestPPAvg.at(o) <<  " " << 
+        sclassPP0.at(o) <<  " " << sclassPP20.at(o) <<  " " << sclassPP50.at(o) <<  " " << sclassPPtotal.at(o) << " " << 
+        finalLTV.at(o) << "\n";
+        if(m % 10 == 0)
+          o++;
     }
 
     pathOutput.close();
     fclose(inputs);
       
-
-  //File for yearly averages.
-  FILE * yearOutput;
-  fopen_s(&yearOutput, "..\\yearOutputs_90mil.txt", "w");
-  fprintf_s(yearOutput, "Year Action ERC SC #Ignitions CrownFire SurfaceFire TotalBurned SuppressionCosts TimberLosses\n");
-
-  for(int m = 0; m < (int)yearlyCharacters.size(); m++)
-    yearlyCharacters.at(m).printAverageValues(yearOutput);
-
-  fclose(yearOutput);
-
-  // File for change in suppression costs and timber loss over each sample pathway.
-  FILE * pairOutput;
-  fopen_s(&pairOutput, "..\\pairOutputs_90mil.txt", "w");
-  fprintf_s(pairOutput, "FireOfInterest Pathway SuppressionSavings TimberLoss ValueChange\n");
-
-  for(int m = 0; m < (int)pairCharacteristics.size(); m++)
-    pairCharacteristics.at(m).printPairValues(pairOutput);
-
-  fclose(pairOutput);
-
-  // Bootstrapping proceedure.
-  /*ProcessVariables meanBootstrap = ProcessVariables(pairCharacteristics);
-  meanBootstrap.bootstrapFireOfInterest();
-
-  // Fire of Interest outputs.
-  vector<double> suppressionCosts;
-  vector<double> timberLosses;
-
-  Statistics runStats;
-  int z = pairCharacteristics.at(0).getFireOfInterest();
-  int k = 0;
-  FILE * foiOutput;
-  fopen_s(&foiOutput, "..\\foiOutput_37mil.txt", "w");
-  fprintf(foiOutput, "FireOfInterest NumPaths AverageSuppressionSavings SDSuppressionSavings "
-    "LowerSC UpperSC AverageTimberLoss SDTimberLoss LowerTL UpperTL\n");
     
-  for(int m = 0; m < (int)pairCharacteristics.size() - 1; m)
-  {
-    int count = 0;
-    bool check = 0;
-    while(m < (int)pairCharacteristics.size() && z == pairCharacteristics.at(k).getFireOfInterest() ){
-      suppressionCosts.push_back((double)pairCharacteristics.at(m).getSuppressionCostSavings());
-      timberLosses.push_back((double)pairCharacteristics.at(m).getTimberLossSavings());
-      k++;
-      m++;
-      check = 1;
-      count++;
-    }
+    //File for yearly averages.
+    sprintf_s(name, "%sYearOutputs.txt", workingDirectory);
+    FILE * yearOutput;
+    fopen_s(&yearOutput, name, "w");
+    fprintf_s(yearOutput, "Year Action ERC SC #Ignitions CrownFire SurfaceFire TotalBurned SuppressionCosts TimberLosses\n");
 
-    if(check == 1)
+    for(int m = 0; m < (int)yearlyCharacters.size(); m++)
+      yearlyCharacters.at(m).printAverageValues(yearOutput);
+
+    fclose(yearOutput);
+
+    // File for change in suppression costs and timber loss over each sample pathway.
+    sprintf_s(name, "%sPairOutputs.txt", workingDirectory);
+    FILE * pairOutput;
+    fopen_s(&pairOutput, name, "w");
+    fprintf_s(pairOutput, "FireOfInterest Pathway SuppressionSavings TimberLoss ValueChange\n");
+
+    for(int m = 0; m < (int)pairCharacteristics.size(); m++)
+      pairCharacteristics.at(m).printPairValues(pairOutput);
+
+    fclose(pairOutput);
+
+    // Bootstrapping proceedure.
+    /*ProcessVariables meanBootstrap = ProcessVariables(pairCharacteristics);
+    meanBootstrap.bootstrapFireOfInterest();
+
+    // Fire of Interest outputs.
+    vector<double> suppressionCosts;
+    vector<double> timberLosses;
+
+    Statistics runStats;
+    int z = pairCharacteristics.at(0).getFireOfInterest();
+    int k = 0;
+    FILE * foiOutput;
+    fopen_s(&foiOutput, "..\\foiOutput_37mil.txt", "w");
+    fprintf(foiOutput, "FireOfInterest NumPaths AverageSuppressionSavings SDSuppressionSavings "
+      "LowerSC UpperSC AverageTimberLoss SDTimberLoss LowerTL UpperTL\n");
+    
+    for(int m = 0; m < (int)pairCharacteristics.size() - 1; m)
     {
-      double aveSC = runStats.average(suppressionCosts);
-      double medianSC = runStats.median(suppressionCosts);
-      double sDSC = runStats.standardDeviation(suppressionCosts);
-      double lowerSC = runStats.lowerBound(suppressionCosts);
-      double upperSC = runStats.upperBound(suppressionCosts);
-      double aveTL = runStats.average(timberLosses);
-      double sDTL = runStats.standardDeviation(timberLosses);
-      double lowerTL = runStats.lowerBound(timberLosses);
-      double upperTL = runStats.upperBound(timberLosses);
+      int count = 0;
+      bool check = 0;
+      while(m < (int)pairCharacteristics.size() && z == pairCharacteristics.at(k).getFireOfInterest() ){
+        suppressionCosts.push_back((double)pairCharacteristics.at(m).getSuppressionCostSavings());
+        timberLosses.push_back((double)pairCharacteristics.at(m).getTimberLossSavings());
+        k++;
+        m++;
+        check = 1;
+        count++;
+      }
+
+      if(check == 1)
+      {
+        double aveSC = runStats.average(suppressionCosts);
+        double medianSC = runStats.median(suppressionCosts);
+        double sDSC = runStats.standardDeviation(suppressionCosts);
+        double lowerSC = runStats.lowerBound(suppressionCosts);
+        double upperSC = runStats.upperBound(suppressionCosts);
+        double aveTL = runStats.average(timberLosses);
+        double sDTL = runStats.standardDeviation(timberLosses);
+        double lowerTL = runStats.lowerBound(timberLosses);
+        double upperTL = runStats.upperBound(timberLosses);
 
     
-      fprintf_s(foiOutput, "%d %d %lf %lf %lf %lf %lf %lf %lf %lf\n", pairCharacteristics.at(k - 1).getFireOfInterest(), 
-        count, aveSC, sDSC, lowerSC, upperSC, aveTL, sDTL, lowerTL, upperTL);
+        fprintf_s(foiOutput, "%d %d %lf %lf %lf %lf %lf %lf %lf %lf\n", pairCharacteristics.at(k - 1).getFireOfInterest(), 
+          count, aveSC, sDSC, lowerSC, upperSC, aveTL, sDTL, lowerTL, upperTL);
+      }
+      
+      suppressionCosts.clear();
+      timberLosses.clear();
+      z++;
     }
-    suppressionCosts.clear();
-    timberLosses.clear();
-    z++;
-  }
-  fclose(foiOutput);*/
-
+    fclose(foiOutput);*/
 
 	return 0;
 }
